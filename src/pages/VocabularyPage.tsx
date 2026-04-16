@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { db } from "../Firebase";
 import { useEffect } from "react";
+import type { KeyboardEvent } from 'react';
 import {
     collection,
     addDoc,
     getDocs,
     deleteDoc,
     doc,
-    updateDoc
+    updateDoc,
+    query,
+    onSnapshot
 } from "firebase/firestore";
 // import {  } from "firebase/firestore";
 
@@ -87,9 +90,9 @@ function sm2(item: VocabItem, quality: 0 | 1 | 2 | 3 | 4 | 5): VocabItem {
 
 // ─── Seed Data ────────────────────────────────────────────────────────────────
 
-const makeDate = (daysOffset: number) => {
-    const d = new Date(); d.setDate(d.getDate() + daysOffset); return d;
-};
+// const makeDate = (daysOffset: number) => {
+//     const d = new Date(); d.setDate(d.getDate() + daysOffset); return d;
+// };
 
 const seed: VocabItem[] = [
     // {
@@ -269,6 +272,7 @@ function AddVocabularyModal({ onClose, onSave }: { onClose: () => void; onSave: 
         if (e.key === "Backspace" && tagInput === "" && tags.length > 0) setTags(p => p.slice(0, -1));
     };
 
+
     const handleSave = () => {
         const errs: typeof errors = {};
         if (!word.trim()) errs.word = "Word is required.";
@@ -368,7 +372,7 @@ function AddVocabularyModal({ onClose, onSave }: { onClose: () => void; onSave: 
                             {statusOpts.map(({ value, dot, active }) => (
                                 <button key={value} onClick={() => setStatus(value)}
                                     className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all ${status === value ? active : "border-[#2d333b] text-[#8b949e] hover:border-[#3d444d] hover:text-[#c9d1d9]"}`}>
-                                    <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: dot }} />
+                                    <span className="w-2 h-2 rounded-full shrink-0" style={{ background: dot }} />
                                     {value}
                                 </button>
                             ))}
@@ -673,7 +677,7 @@ function VocabCard({ item, onStar, onDelete, onClick }: {
                         </span>
                     </div>
                 </div>
-                <div className="flex flex-col items-end gap-3 flex-shrink-0">
+                <div className="flex flex-col items-end gap-3 shrink-0">
                     <span className={`text-xs font-semibold px-3 py-1 rounded-full ${statusColors[item.status].bg} ${statusColors[item.status].text}`}>
                         {item.status}
                     </span>
